@@ -18,7 +18,7 @@ public class TcpServer {
             socket = serverSocket.accept();
             System.out.println("New client connected");
 
-            File file = new File("src/Server/test.txt");
+            File file = new File("src/Server/Danmark.txt");
             if (!file.exists()) {
                 System.out.println("File does not exist");
                 return;
@@ -27,6 +27,8 @@ public class TcpServer {
             // Initialize streams
             dataOutputStream = new DataOutputStream(socket.getOutputStream());
             fileInputStream = new FileInputStream(file);
+
+            dataOutputStream.writeUTF(file.getName());
 
             byte[] buffer = new byte[1024];
             int bytesRead;
@@ -38,6 +40,8 @@ public class TcpServer {
 
             System.out.println("File sent successfully");
 
+        } catch (FileNotFoundException e) {
+            System.out.println("Error: The file was not found: " + e.getMessage());
         } catch (IOException e) {
             System.out.println("Server exception: " + e.getMessage());
             e.printStackTrace(); // For debugging purposes

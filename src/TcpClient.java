@@ -14,10 +14,12 @@ public class TcpClient {
             socket = new Socket(hostname, port);
             System.out.println("Client connected to server");
 
-            File file = new File("src/Client/DownloadedFile.txt");
+            dataInputStream = new DataInputStream(socket.getInputStream());
+
+            String fileName = dataInputStream.readUTF();
+            File file = new File("src/Client/" + fileName);
 
             // Initialize streams inside the try block
-            dataInputStream = new DataInputStream(socket.getInputStream());
             fileOutputStream = new FileOutputStream(file);
 
             byte[] buffer = new byte[1024];
@@ -30,6 +32,8 @@ public class TcpClient {
 
             System.out.println("File received successfully");
 
+        } catch (FileNotFoundException e) {
+            System.out.println("Error: The file was not found: " + e.getMessage());
         } catch (IOException e) {
             System.out.println("IO error: " + e.getMessage());
             e.printStackTrace(); // for debugging purposes
