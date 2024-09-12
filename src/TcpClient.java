@@ -17,7 +17,11 @@ public class TcpClient {
             dataInputStream = new DataInputStream(socket.getInputStream());
 
             String fileName = dataInputStream.readUTF();
-            File file = new File("src/Client/" + fileName);
+
+            //File destination directory
+            String fileDirectory = "src/Client/";
+            //Call method for unique file id
+            File file = getUniqueFile(fileDirectory, fileName);
 
             // Initialize streams inside the try block
             fileOutputStream = new FileOutputStream(file);
@@ -58,5 +62,31 @@ public class TcpClient {
                 System.out.println("Error closing socket: " + e.getMessage());
             }
         }
+
     }
+    // Metode for at give et unikt fil navn, med nummer, hvis fillen allrede eksitere
+    private static File getUniqueFile(String directory, String fileName) {
+        File file = new File(directory + fileName);
+        String baseName = fileName;
+        String extension = "";
+
+        //kontrolere om den har en extension
+        int dotIndex = fileName.lastIndexOf('.');
+        if (dotIndex != 1) {
+            baseName = fileName.substring(0, dotIndex); //Uden extension
+            extension = fileName.substring(dotIndex);   //Med extension
+        }
+
+
+        // et loop til at finde et gyldigt fil navn
+        int count = 1;
+        while (file.exists()) {
+            String newFileName = baseName + "(" + count + ")" + extension;
+            file = new File(directory + newFileName);
+            count++;
+        }
+        return file;
+    }
+
+
 }
